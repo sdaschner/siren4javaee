@@ -1,4 +1,5 @@
-# Siren 4 Java EE
+= Siren 4 Java EE
+
 Lean and minimalistic Java EE library for creating Siren JSONP responses.
 
 Inspired by https://github.com/eserating/siren4j[Siren4J].
