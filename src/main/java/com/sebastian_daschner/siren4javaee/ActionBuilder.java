@@ -8,6 +8,11 @@ import javax.ws.rs.core.MediaType;
 import java.net.URI;
 
 /**
+ * Builder pattern functionality to programmatically create action objects in Siren responses.
+ * The {@link ActionBuilder} sub objects are created by calling {@link Siren#createActionBuilder()},
+ * modified by the available methods in this class and finally added to a Siren response entity by calling
+ * {@link EntityBuilder#addAction(JsonObject)} or {@link EntityBuilder#addAction(ActionBuilder)}.
+ *
  * @author Sebastian Daschner
  */
 public class ActionBuilder {
@@ -60,11 +65,10 @@ public class ActionBuilder {
         return this;
     }
 
-    // TODO add missing properties
-    // TODO make Java type out of type
     public ActionBuilder addFields(final String name, final FieldType type) {
         if (fieldsBuilder == null)
             fieldsBuilder = Json.createArrayBuilder();
+        // TODO add missing properties
         fieldsBuilder.add(Json.createObjectBuilder().add("name", name).add("type", type.toString()));
         return this;
     }

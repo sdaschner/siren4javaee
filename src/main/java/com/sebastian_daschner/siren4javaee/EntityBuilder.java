@@ -12,6 +12,10 @@ import java.net.URI;
 import java.util.stream.Stream;
 
 /**
+ * Builder pattern functionality to programmatically create Siren response entities.
+ * The {@link EntityBuilder} is be created by calling {@link Siren#createEntityBuilder()},
+ * modified by the available methods in this class and finally built to a {@link JsonObject} by calling {@link #build}.
+ *
  * @author Sebastian Daschner
  */
 public class EntityBuilder {
@@ -188,8 +192,7 @@ public class EntityBuilder {
         if (actionsBuilder != null)
             objectBuilder.add("actions", actionsBuilder.build());
 
-        return objectBuilder
-                .build();
+        return objectBuilder.build();
     }
 
 }
