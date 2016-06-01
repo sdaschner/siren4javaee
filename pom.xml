@@ -1,11 +1,30 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.sebastian-daschner</groupId>
     <artifactId>siren4javaee</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <name>Siren 4 Java EE</name>
     <packaging>jar</packaging>
+
+    <description>Lean and minimalistic Java EE library for creating Siren JSONP responses.</description>
+    <url>https://github.com/sdaschner/siren4javaee</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Sebastian Daschner</name>
+            <organization>sebastian-daschner.com</organization>
+            <organizationUrl>https://www.sebastian-daschner.com</organizationUrl>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>
