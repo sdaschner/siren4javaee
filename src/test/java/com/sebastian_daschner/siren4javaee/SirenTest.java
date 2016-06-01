@@ -93,8 +93,25 @@ public class SirenTest {
                         .setMethod(HttpMethod.POST)
                         .setHref(URI.create("https://api.example.com/shopping_cart"))
                         .setType(MediaType.APPLICATION_JSON)
-                        .addFields("id", FieldType.TEXT)
-                        .addFields("quantity", FieldType.NUMBER))
+                        .addField("id", FieldType.TEXT)
+                        .addField("quantity", FieldType.NUMBER))
+                .addAction(Siren.createActionBuilder()
+                        .setName("modify")
+                        .setTitle("Modify book")
+                        .setMethod(HttpMethod.PUT)
+                        .setHref(URI.create("https://api.example.com/books/1"))
+                        .setType(MediaType.APPLICATION_JSON)
+                        .addField(Siren.createFieldBuilder()
+                                .setName("name")
+                                .setType(FieldType.COLOR)
+                                .setValue("#ff0000")
+                                .addClass("name-color")
+                                .setTitle("Color"))
+                        .addField(Siren.createFieldBuilder()
+                                .addClass("foobar")
+                                .addClass("test")
+                                .setName("test")
+                                .setType(FieldType.DATETIME_LOCAL).build()))
                 .addAction(Siren.createActionBuilder()
                         .setName("delete")
                         .setTitle("Delete book")
@@ -134,6 +151,15 @@ public class SirenTest {
                 "\"fields\":[" +
                 "{\"name\":\"id\",\"type\":\"text\"}," +
                 "{\"name\":\"quantity\",\"type\":\"number\"}]" +
+                "},{" +
+                "\"name\":\"modify\"," +
+                "\"title\":\"Modify book\"," +
+                "\"method\":\"PUT\"," +
+                "\"href\":\"https://api.example.com/books/1\"," +
+                "\"type\":\"application/json\"," +
+                "\"fields\":[" +
+                "{\"class\":[\"name-color\"],\"name\":\"name\",\"type\":\"color\",\"value\":\"#ff0000\",\"title\":\"Color\"}," +
+                "{\"class\":[\"foobar\",\"test\"],\"name\":\"test\",\"type\":\"datetime-local\"}]" +
                 "},{" +
                 "\"name\":\"delete\"," +
                 "\"title\":\"Delete book\"," +

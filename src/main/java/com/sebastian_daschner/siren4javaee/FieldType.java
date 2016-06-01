@@ -7,19 +7,39 @@ package com.sebastian_daschner.siren4javaee;
  */
 public enum FieldType {
 
-    /**
-     * Text (i.e. String) type.
-     */
     TEXT,
+    NUMBER,
+    HIDDEN,
+    SEARCH,
+    TEL,
+    URL,
+    EMAIL,
+    PASSWORD,
+    DATETIME,
+    DATE,
+    MONTH,
+    WEEK,
+    TIME,
+    DATETIME_LOCAL("datetime-local"),
+    RANGE,
+    COLOR,
+    CHECKBOX,
+    RADIO,
+    FILE;
 
-    /**
-     * Number type &mdash; either integer or floating point number.
-     */
-    NUMBER;
+    private String name;
+
+    FieldType() {
+        this.name = name().toLowerCase();
+    }
+
+    FieldType(final String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
-        return name().toLowerCase();
+        return name;
     }
 
 }

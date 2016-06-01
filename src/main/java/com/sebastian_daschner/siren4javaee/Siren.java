@@ -44,4 +44,12 @@ public final class Siren {
         return new ActionBuilder();
     }
 
+    /**
+     * Builder pattern factory method to create an empty {@link FieldBuilder} which is used inside {@link ActionBuilder}s.
+     * By calling {@link FieldBuilder#build()} the final JSONP object will be created.
+     */
+    public static FieldBuilder createFieldBuilder() {
+        return new FieldBuilder();
+    }
+
 }

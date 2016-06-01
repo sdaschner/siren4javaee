@@ -4,6 +4,8 @@ Lean and minimalistic Java EE library for creating Siren JSONP responses.
 
 Inspired by https://github.com/eserating/siren4j[Siren4J].
 
-Contains a simple builder-pattern like approach to programatically create JSONP response objects in the https://github.com/kevinswiber/siren[Siren] Hypermedia enabled content type.
+Contains a simple builder-pattern like approach to programmatically create JSONP response objects in the https://github.com/kevinswiber/siren[Siren] Hypermedia enabled content type.
 No external dependencies are needed.
 Contains only one (provided) dependency to the Java EE 7 API.
+
+The current Siren version is `0.6.1`.

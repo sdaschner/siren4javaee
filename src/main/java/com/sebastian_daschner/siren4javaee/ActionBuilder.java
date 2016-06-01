@@ -40,7 +40,7 @@ public class ActionBuilder {
     }
 
     /**
-     * Constants can be accessed from {@link javax.ws.rs.HttpMethod}.
+     * <b>Note:</b> Constants can be accessed from {@link javax.ws.rs.HttpMethod}.
      */
     public ActionBuilder setMethod(final String method) {
         this.method = method;
@@ -65,11 +65,25 @@ public class ActionBuilder {
         return this;
     }
 
-    public ActionBuilder addFields(final String name, final FieldType type) {
+    /**
+     * Shortcut to calling {@code actionBuilder.addField(Siren.createFieldBuilder().setName(name).setType(fieldType))}.
+     */
+    public ActionBuilder addField(final String name, final FieldType type) {
+        addField(Siren.createFieldBuilder().setName(name).setType(type));
+        return this;
+    }
+
+    public ActionBuilder addField(final FieldBuilder builder) {
         if (fieldsBuilder == null)
             fieldsBuilder = Json.createArrayBuilder();
-        // TODO add missing properties
-        fieldsBuilder.add(Json.createObjectBuilder().add("name", name).add("type", type.toString()));
+        fieldsBuilder.add(builder.build());
+        return this;
+    }
+
+    public ActionBuilder addField(final JsonObject field) {
+        if (fieldsBuilder == null)
+            fieldsBuilder = Json.createArrayBuilder();
+        fieldsBuilder.add(field);
         return this;
     }
 
