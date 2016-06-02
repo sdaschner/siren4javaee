@@ -9,3 +9,34 @@ No external dependencies are needed.
 Contains only one (provided) dependency to the Java EE 7 API.
 
 The current Siren version is `0.6.1`.
+
+*Usage:*
+
+----
+<dependency>
+    <groupId>com.sebastian-daschner</groupId>
+    <artifactId>siren4javaee</artifactId>
+    <version>1.0</version>
+</dependency>
+----
+
+----
+JsonObject bookEntity = Siren.createEntityBuilder()
+    .addClass("book")
+    .addProperty("isbn", book.getIsbn())
+    .addProperty("name", book.getName())
+    .addProperty("author", book.getAuthor())
+    .addProperty("availability", book.getAvailability().toString())
+    .addProperty("price", book.getPrice())
+    .addLink(bookUri, "self")
+    .addAction(Siren.createActionBuilder()
+        .setName("add-to-cart")
+        .setTitle("Add book to cart")
+        .setMethod(HttpMethod.POST)
+        .setHref(shoppingCartUri)
+        .setType(MediaType.APPLICATION_JSON)
+        .addField("isbn", FieldType.TEXT)
+        .addField("quantity", FieldType.NUMBER)).build();
+----
+
+For a more comprehensive example see the https://github.com/sdaschner/jaxrs-hypermedia/tree/master/siren-siren4javaee[siren4javaee] approach in https://github.com/sdaschner/jaxrs-hypermedia[Hypermedia with JAX-RS].
