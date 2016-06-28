@@ -203,10 +203,12 @@ public class SirenTest {
 
         final String actual = Siren.createEntityBuilder()
                 .setSubEntityType(MediaType.APPLICATION_JSON_TYPE)
+                .setSubEntityHref(URI.create("https://api.example.com/books/1"))
                 .addLink(Link.fromUri("https://api.example.com/books/1").rel("self").build())
                 .build().toString();
         final String expected = "{" +
                 "\"type\":\"application/json\"," +
+                "\"href\":\"https://api.example.com/books/1\"," +
                 "\"links\":[{" +
                 "\"rel\":[\"self\"]," +
                 "\"href\":\"https://api.example.com/books/1\"}]" +

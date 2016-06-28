@@ -44,6 +44,7 @@ public class EntityBuilder {
 
     private String title;
     private String type;
+    private URI href;
 
     EntityBuilder() {
         // prevent other instances than Siren factory methods
@@ -185,6 +186,11 @@ public class EntityBuilder {
         return this;
     }
 
+    public EntityBuilder setSubEntityHref(final URI href) {
+        this.href = href;
+        return this;
+    }
+
     public JsonObject build() {
         final JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 
@@ -197,6 +203,8 @@ public class EntityBuilder {
             objectBuilder.add("rel", relBuilder.build());
         if (type != null)
             objectBuilder.add("type", type);
+        if (href != null)
+            objectBuilder.add("href", href.toString());
 
         if (propertiesBuilder != null)
             objectBuilder.add("properties", propertiesBuilder.build());
