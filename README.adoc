@@ -53,7 +53,7 @@ _To follow links and perform actions from a Siren client:_
 URI baseUri = URI.create("http://localhost:8080/siren-plain-ee/resources/");
 SirenClient client = Siren.createClient(ClientBuilder.newClient());
 
-Entity entity = client.retrieveEntity(uri);
+Entity entity = client.retrieveEntity(baseUri);
 entity = client.followLink(entity, "books");
 
 client.performAction(entity, "delete-book");
