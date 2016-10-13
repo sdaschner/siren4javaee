@@ -21,7 +21,8 @@ The current Siren version is `0.6.1`.
 </dependency>
 ----
 
-.To create JSON objects programmatically:
+_To create JSON objects programmatically:_
+
 ----
 JsonObject bookEntity = Siren.createEntityBuilder()
     .addClass("book")
@@ -41,13 +42,13 @@ JsonObject bookEntity = Siren.createEntityBuilder()
         .addField("quantity", FieldType.NUMBER)).build();
 ----
 
-.To read JSON objects into `Entity` objects:
+_To read JSON objects into `Entity` objects:_
 ----
 EntityReader entityReader = Siren.createEntityReader();
 Entity entity = entityReader.read(jsonObject);
 ----
 
-.To follow links and perform actions from a Siren client:
+_To follow links and perform actions from a Siren client:_
 ----
 URI baseUri = URI.create("http://localhost:8080/siren-plain-ee/resources/");
 SirenClient client = Siren.createClient(ClientBuilder.newClient());
