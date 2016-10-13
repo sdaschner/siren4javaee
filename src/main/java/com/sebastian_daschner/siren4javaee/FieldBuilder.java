@@ -30,20 +30,22 @@ import javax.json.JsonObjectBuilder;
  */
 public class FieldBuilder {
 
-    private JsonArrayBuilder classBuilder;
+    private JsonArrayBuilder classesBuilder;
+
     private String name;
     private FieldType type;
     private String value;
     private String title;
+    private boolean required;
 
     FieldBuilder() {
         // prevent other instances than Siren factory methods
     }
 
     public FieldBuilder addClass(final String fieldClass) {
-        if (classBuilder == null)
-            classBuilder = Json.createArrayBuilder();
-        classBuilder.add(fieldClass);
+        if (classesBuilder == null)
+            classesBuilder = Json.createArrayBuilder();
+        classesBuilder.add(fieldClass);
         return this;
     }
 
@@ -67,11 +69,16 @@ public class FieldBuilder {
         return this;
     }
 
+    public FieldBuilder setRequired(final boolean required) {
+        this.required = required;
+        return this;
+    }
+
     public JsonObject build() {
         final JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 
-        if (classBuilder != null)
-            objectBuilder.add("class", classBuilder.build());
+        if (classesBuilder != null)
+            objectBuilder.add("class", classesBuilder.build());
 
         if (name != null)
             objectBuilder.add("name", name);
@@ -82,7 +89,9 @@ public class FieldBuilder {
         if (title != null)
             objectBuilder.add("title", title);
 
-        return objectBuilder.build();
+        return objectBuilder
+                .add("required", required)
+                .build();
     }
 
 }

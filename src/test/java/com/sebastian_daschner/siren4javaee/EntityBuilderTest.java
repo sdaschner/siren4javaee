@@ -21,11 +21,11 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.ext.RuntimeDelegate;
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
 
+import static com.sebastian_daschner.siren4javaee.TestUtils.injectRuntimeDelegate;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -33,7 +33,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class SirenTest {
+public class EntityBuilderTest {
 
     @Test
     public void testSimple() {
@@ -100,7 +100,21 @@ public class SirenTest {
                         .setSubEntityType("application/json")
                         .addProperty("name", "Hello")
                         .addProperty("author", "World")
-                        .addLink(URI.create("https://api.example.com/books/2"), "self", "foobar")
+                        .addLink(Siren.createLinkBuilder()
+                                .addClass("link")
+                                .addClass("class")
+                                .addRel("self")
+                                .addRel("foobar")
+                                .setHref(URI.create("https://api.example.com/books/2"))
+                                .setTitle("Link title")
+                                .setType(MediaType.APPLICATION_JSON))
+                        .addLink(Siren.createLinkBuilder()
+                                .addClass("link")
+                                .addRel("self")
+                                .addRel("foobar")
+                                .setHref(URI.create("https://api.example.com/books/2"))
+                                .setTitle("Link title")
+                                .setType(MediaType.APPLICATION_JSON).build())
                         .build())
                 .addAction(Siren.createActionBuilder()
                         .setName("add-to-cart")
@@ -111,6 +125,8 @@ public class SirenTest {
                         .addField("id", FieldType.TEXT)
                         .addField("quantity", FieldType.NUMBER))
                 .addAction(Siren.createActionBuilder()
+                        .addClass("action")
+                        .addClass("class")
                         .setName("modify")
                         .setTitle("Modify book")
                         .setMethod(HttpMethod.PUT)
@@ -126,8 +142,10 @@ public class SirenTest {
                                 .addClass("foobar")
                                 .addClass("test")
                                 .setName("test")
+                                .setRequired(true)
                                 .setType(FieldType.DATETIME_LOCAL).build()))
                 .addAction(Siren.createActionBuilder()
+                        .addClass("action")
                         .setName("delete")
                         .setTitle("Delete book")
                         .setMethod(HttpMethod.DELETE)
@@ -153,7 +171,10 @@ public class SirenTest {
                 "\"properties\":{" +
                 "\"name\":\"Hello\"," +
                 "\"author\":\"World\"}," +
-                "\"links\":[{\"rel\":[\"self\",\"foobar\"],\"href\":\"https://api.example.com/books/2\"}]" +
+                "\"links\":[" +
+                "{\"class\":[\"link\",\"class\"],\"title\":\"Link title\",\"rel\":[\"self\",\"foobar\"],\"href\":\"https://api.example.com/books/2\",\"type\":\"application/json\"}," +
+                "{\"class\":[\"link\"],\"title\":\"Link title\",\"rel\":[\"self\",\"foobar\"],\"href\":\"https://api.example.com/books/2\",\"type\":\"application/json\"}" +
+                "]" +
                 "}]," +
                 "\"links\":[{\"rel\":[\"self\"],\"href\":\"https://api.example.com/books\"}]," +
                 "\"actions\":[" +
@@ -164,18 +185,20 @@ public class SirenTest {
                 "\"href\":\"https://api.example.com/shopping_cart\"," +
                 "\"type\":\"application/json\"," +
                 "\"fields\":[" +
-                "{\"name\":\"id\",\"type\":\"text\"}," +
-                "{\"name\":\"quantity\",\"type\":\"number\"}]" +
+                "{\"name\":\"id\",\"type\":\"text\",\"required\":false}," +
+                "{\"name\":\"quantity\",\"type\":\"number\",\"required\":false}]" +
                 "},{" +
+                "\"class\":[\"action\",\"class\"]," +
                 "\"name\":\"modify\"," +
                 "\"title\":\"Modify book\"," +
                 "\"method\":\"PUT\"," +
                 "\"href\":\"https://api.example.com/books/1\"," +
                 "\"type\":\"application/json\"," +
                 "\"fields\":[" +
-                "{\"class\":[\"name-color\"],\"name\":\"name\",\"type\":\"color\",\"value\":\"#ff0000\",\"title\":\"Color\"}," +
-                "{\"class\":[\"foobar\",\"test\"],\"name\":\"test\",\"type\":\"datetime-local\"}]" +
+                "{\"class\":[\"name-color\"],\"name\":\"name\",\"type\":\"color\",\"value\":\"#ff0000\",\"title\":\"Color\",\"required\":false}," +
+                "{\"class\":[\"foobar\",\"test\"],\"name\":\"test\",\"type\":\"datetime-local\",\"required\":true}]" +
                 "},{" +
+                "\"class\":[\"action\"]," +
                 "\"name\":\"delete\"," +
                 "\"title\":\"Delete book\"," +
                 "\"method\":\"DELETE\"," +
@@ -197,7 +220,8 @@ public class SirenTest {
         when(headerDelegateMock.toString(any())).thenReturn("application/json");
         when(linkBuilderMock.uri(anyString())).thenReturn(linkBuilderMock);
         when(linkBuilderMock.rel(anyString())).thenReturn(linkBuilderMock);
-        when(linkBuilderMock.build()).thenReturn(new DummyLink("https://api.example.com/books/1", "self"));
+        when(linkBuilderMock.build()).thenReturn(new DummyLink("https://api.example.com/books/1", "self"),
+                new DummyLink("https://api.example.com/books/123", "one", "two"));
 
         injectRuntimeDelegate(delegateMock);
 
@@ -205,28 +229,20 @@ public class SirenTest {
                 .setSubEntityType(MediaType.APPLICATION_JSON_TYPE)
                 .setSubEntityHref(URI.create("https://api.example.com/books/1"))
                 .addLink(Link.fromUri("https://api.example.com/books/1").rel("self").build())
+                .addLink(Link.fromUri("https://api.example.com/books/123").rel("one two").build())
                 .build().toString();
         final String expected = "{" +
                 "\"type\":\"application/json\"," +
                 "\"href\":\"https://api.example.com/books/1\"," +
                 "\"links\":[{" +
                 "\"rel\":[\"self\"]," +
-                "\"href\":\"https://api.example.com/books/1\"}]" +
+                "\"href\":\"https://api.example.com/books/1\"" +
+                "},{" +
+                "\"rel\":[\"one\",\"two\"]," +
+                "\"href\":\"https://api.example.com/books/123\"}]" +
                 "}";
 
-        assertThat(actual, is(expected)
-
-        );
-    }
-
-    private static void injectRuntimeDelegate(final RuntimeDelegate runtimeDelegate) {
-        try {
-            final Field delegateField = RuntimeDelegate.class.getDeclaredField("cachedDelegate");
-            delegateField.setAccessible(true);
-            delegateField.set(null, runtimeDelegate);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        assertThat(actual, is(expected));
     }
 
 }

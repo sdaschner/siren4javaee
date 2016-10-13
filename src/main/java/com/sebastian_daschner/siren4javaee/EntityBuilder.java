@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  */
 public class EntityBuilder {
 
-    private JsonArrayBuilder classBuilder;
+    private JsonArrayBuilder classesBuilder;
     private JsonObjectBuilder propertiesBuilder;
     private JsonArrayBuilder linksBuilder;
     private JsonArrayBuilder relBuilder;
@@ -51,9 +51,9 @@ public class EntityBuilder {
     }
 
     public EntityBuilder addClass(final String entityClass) {
-        if (classBuilder == null)
-            classBuilder = Json.createArrayBuilder();
-        classBuilder.add(entityClass);
+        if (classesBuilder == null)
+            classesBuilder = Json.createArrayBuilder();
+        classesBuilder.add(entityClass);
         return this;
     }
 
@@ -120,6 +120,20 @@ public class EntityBuilder {
         return this;
     }
 
+    public EntityBuilder addLink(final LinkBuilder builder) {
+        if (linksBuilder == null)
+            linksBuilder = Json.createArrayBuilder();
+        linksBuilder.add(builder.build());
+        return this;
+    }
+
+    public EntityBuilder addLink(final JsonObject link) {
+        if (linksBuilder == null)
+            linksBuilder = Json.createArrayBuilder();
+        linksBuilder.add(link);
+        return this;
+    }
+
     public EntityBuilder addLink(final URI uri, final String rel) {
         if (linksBuilder == null)
             linksBuilder = Json.createArrayBuilder();
@@ -144,7 +158,7 @@ public class EntityBuilder {
         if (linksBuilder == null)
             linksBuilder = Json.createArrayBuilder();
         linksBuilder.add(Json.createObjectBuilder()
-                .add("rel", Json.createArrayBuilder().add(link.getRel()))
+                .add("rel", link.getRels().stream().collect(Json::createArrayBuilder, JsonArrayBuilder::add, JsonArrayBuilder::add))
                 .add("href", link.getUri().toString())
                 .build());
         return this;
@@ -194,8 +208,8 @@ public class EntityBuilder {
     public JsonObject build() {
         final JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
 
-        if (classBuilder != null)
-            objectBuilder.add("class", classBuilder.build());
+        if (classesBuilder != null)
+            objectBuilder.add("class", classesBuilder.build());
 
         if (title != null)
             objectBuilder.add("title", title);

@@ -18,19 +18,19 @@ package com.sebastian_daschner.siren4javaee;
 import javax.ws.rs.core.Link;
 import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static java.util.Collections.singletonList;
+import java.util.stream.Stream;
 
 class DummyLink extends Link {
 
+    private final List<String> rels = new ArrayList<>();
     private final String uri;
-    private final String rel;
 
-    DummyLink(final String uri, final String rel) {
+    DummyLink(final String uri, final String... rels) {
         this.uri = uri;
-        this.rel = rel;
+        Stream.of(rels).forEach(this.rels::add);
     }
 
     @Override
@@ -45,12 +45,12 @@ class DummyLink extends Link {
 
     @Override
     public String getRel() {
-        return rel;
+        return rels.get(0);
     }
 
     @Override
     public List<String> getRels() {
-        return singletonList(uri);
+        return rels;
     }
 
     @Override

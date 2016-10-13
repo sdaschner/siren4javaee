@@ -33,6 +33,7 @@ import java.net.URI;
 public class ActionBuilder {
 
     private JsonArrayBuilder fieldsBuilder;
+    private JsonArrayBuilder classesBuilder;
 
     private String name;
     private String title;
@@ -44,13 +45,20 @@ public class ActionBuilder {
         // prevent other instances than Siren factory methods
     }
 
-    public ActionBuilder setName(final String name) {
-        this.name = name;
+    public ActionBuilder addClass(final String entityClass) {
+        if (classesBuilder == null)
+            classesBuilder = Json.createArrayBuilder();
+        classesBuilder.add(entityClass);
         return this;
     }
 
     public ActionBuilder setTitle(final String title) {
         this.title = title;
+        return this;
+    }
+
+    public ActionBuilder setName(final String name) {
+        this.name = name;
         return this;
     }
 
@@ -104,6 +112,9 @@ public class ActionBuilder {
 
     public JsonObject build() {
         final JsonObjectBuilder objectBuilder = Json.createObjectBuilder();
+
+        if (classesBuilder != null)
+            objectBuilder.add("class", classesBuilder.build());
 
         if (name != null)
             objectBuilder.add("name", name);

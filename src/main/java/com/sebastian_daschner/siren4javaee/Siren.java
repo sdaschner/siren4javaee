@@ -15,8 +15,12 @@
  */
 package com.sebastian_daschner.siren4javaee;
 
+import javax.ws.rs.client.Client;
+
 /**
- * Class to create builders for Siren entity representations which build JSONP objects.
+ * Class to create Siren builders, clients and readers.
+ * <p>
+ * The builder construct JSONP {@link javax.json.JsonObject}s.
  * <b>Example:</b>
  * <pre>
  * Siren.createEntityBuilder()
@@ -33,6 +37,23 @@ package com.sebastian_daschner.siren4javaee;
  *             .build())
  *     .addLink(uri, "self")
  *     .build();
+ * </pre>
+ * <p>
+ * The client is used to retrieve entities and follow actions.
+ * <b>Example:</b>
+ * <pre>
+ * SirenClient client = Siren.createClient(ClientBuilder.newClient());
+ * Entity entity = client.retrieveEntity(uri);
+ * JsonObject properties = ...
+ * client.performAction(entity, "action-name", properties);
+ * </pre>
+ * <p>
+ * The readers reads {@link javax.json.JsonObject}s into {@link Entity}s and is
+ * usually just used indirectly in the {@link SirenClient}, but can also be used standalone.
+ * <b>Example:</b>
+ * <pre>
+ * EntityReader reader = Siren.createEntityReader();
+ * Entity entity = sirenReader.read(jsonObject);
  * </pre>
  *
  * @author Sebastian Daschner
@@ -52,6 +73,14 @@ public final class Siren {
     }
 
     /**
+     * Builder pattern factory method to create an empty {@link LinkBuilder} which is used inside {@link EntityBuilder}s.
+     * By calling {@link LinkBuilder#build()} the final JSONP object will be created.
+     */
+    public static LinkBuilder createLinkBuilder() {
+        return new LinkBuilder();
+    }
+
+    /**
      * Builder pattern factory method to create an empty {@link ActionBuilder} which is used inside {@link EntityBuilder}s.
      * By calling {@link ActionBuilder#build()} the final JSONP object will be created.
      */
@@ -65,6 +94,22 @@ public final class Siren {
      */
     public static FieldBuilder createFieldBuilder() {
         return new FieldBuilder();
+    }
+
+    /**
+     * Creates a new Siren client that uses the given {@code client} to access the locations.
+     * Can retrieve {@link Entity}s and perform Siren actions.
+     */
+    public static SirenClient createClient(final Client client) {
+        return new SirenClient(client);
+    }
+
+    /**
+     * Creates a {@link EntityReader} that is used to read {@link javax.json.JsonObject}s into {@link Entity}s.
+     * This class is usually used indirectly by using the {@link SirenClient}, but can also be used standalone.
+     */
+    public static EntityReader createEntityReader() {
+        return new EntityReader();
     }
 
 }
