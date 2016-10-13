@@ -2,9 +2,10 @@
 
 Lean and minimalistic Java EE library for creating Siren JSONP responses.
 
-Inspired by https://github.com/eserating/siren4j[Siren4J].
+Library to use the https://github.com/kevinswiber/siren[Siren] Hypermedia content type in enterprise Java.
+Can read and create entity objects from and to JSON programmatically.
+Also contains basic hypermedia client functionality to follow links and perform actions.
 
-Contains a simple builder-pattern like approach to programmatically create JSONP response objects in the https://github.com/kevinswiber/siren[Siren] Hypermedia enabled content type.
 No external dependencies are needed.
 Contains only one (provided) dependency to the Java EE 7 API.
 
@@ -16,10 +17,11 @@ The current Siren version is `0.6.1`.
 <dependency>
     <groupId>com.sebastian-daschner</groupId>
     <artifactId>siren4javaee</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
 </dependency>
 ----
 
+.To create JSON objects programmatically:
 ----
 JsonObject bookEntity = Siren.createEntityBuilder()
     .addClass("book")
@@ -39,4 +41,23 @@ JsonObject bookEntity = Siren.createEntityBuilder()
         .addField("quantity", FieldType.NUMBER)).build();
 ----
 
-For a more comprehensive example see the https://github.com/sdaschner/jaxrs-hypermedia/tree/master/siren-siren4javaee[siren4javaee] approach in https://github.com/sdaschner/jaxrs-hypermedia[Hypermedia with JAX-RS].
+.To read JSON objects into `Entity` objects:
+----
+EntityReader entityReader = Siren.createEntityReader();
+Entity entity = entityReader.read(jsonObject);
+----
+
+.To follow links and perform actions from a Siren client:
+----
+URI baseUri = URI.create("http://localhost:8080/siren-plain-ee/resources/");
+SirenClient client = Siren.createClient(ClientBuilder.newClient());
+
+Entity entity = client.retrieveEntity(uri);
+entity = client.followLink(entity, "books");
+
+client.performAction(entity, "delete-book");
+----
+
+For a more comprehensive example see both the https://github.com/sdaschner/jaxrs-hypermedia/tree/master/siren-siren4javaee[siren4javaee] and https://github.com/sdaschner/jaxrs-hypermedia/tree/master/siren-client-siren4javaee[siren-client] approaches in https://github.com/sdaschner/jaxrs-hypermedia[Hypermedia with JAX-RS].
+
+Inspired by https://github.com/eserating/siren4j[Siren4J].
